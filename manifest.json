@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Resistor",
   "description": "Creates resistance accessing distracting and addictive websites.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "permissions": ["storage", "scripting", "tabs"],
   "host_permissions": ["<all_urls>"],
   "background": {
