@@ -229,6 +229,9 @@
       window.location.href = redirectUrl;
     };
 
+    buttonContainer.appendChild(button);
+    buttonContainer.appendChild(giveUpButton);
+
     const errorDiv = document.createElement('div');
     Object.assign(errorDiv.style, {
       color: '#ff4d4f',
@@ -238,51 +241,276 @@
       minHeight: '28px'
     });
 
-    buttonContainer.appendChild(button);
-    buttonContainer.appendChild(giveUpButton);
+    // Domain confirmation phase
+    const domainP = document.createElement('p');
+    domainP.textContent = `Type "${window.location.hostname}" to confirm you want to access this site:`;
+    Object.assign(domainP.style, {
+      fontSize: '1.3em',
+      margin: '18px 0 10px 0',
+      fontWeight: '500',
+      letterSpacing: '0.5px',
+      minHeight: '32px'
+    });
+
+    const domainInput = document.createElement('input');
+    domainInput.type = 'text';
+    domainInput.placeholder = 'Enter the domain name';
+    Object.assign(domainInput.style, {
+      padding: '14px 18px',
+      fontSize: '1.2em',
+      margin: '12px 0',
+      borderRadius: '8px',
+      border: 'none',
+      outline: 'none',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      textAlign: 'center',
+      width: '320px',
+      maxWidth: '80vw',
+      background: 'rgba(255,255,255,0.15)',
+      color: '#fff',
+      fontWeight: '500',
+      letterSpacing: '0.5px'
+    });
+
+    const domainButton = document.createElement('button');
+    domainButton.textContent = 'Confirm Domain';
+    Object.assign(domainButton.style, {
+      padding: '14px 18px',
+      fontSize: '1.2em',
+      borderRadius: '8px',
+      border: 'none',
+      background: 'linear-gradient(90deg, #00c6ff 0%, #0072ff 100%)',
+      color: '#fff',
+      fontWeight: '600',
+      margin: '0',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+      cursor: 'pointer',
+      transition: 'background 0.2s',
+      whiteSpace: 'nowrap'
+    });
+    domainButton.onmouseover = () => {
+      domainButton.style.background = 'linear-gradient(90deg, #0072ff 0%, #00c6ff 100%)';
+    };
+    domainButton.onmouseout = () => {
+      domainButton.style.background = 'linear-gradient(90deg, #00c6ff 0%, #0072ff 100%)';
+    };
 
     overlay.appendChild(quoteDiv);
     overlay.appendChild(iconImg);
     overlay.appendChild(h1);
-    overlay.appendChild(p);
-    overlay.appendChild(input);
-    overlay.appendChild(buttonContainer);
-    const devLink = document.createElement('a');
-    devLink.href = 'https://x.com/technerdxp';
-    devLink.textContent = '@TechNerdXp';
-    devLink.target = '_blank';
-    Object.assign(devLink.style, {
-      position: 'absolute',
-      bottom: '10px',
-      right: '10px',
-      fontSize: '0.8em',
-      color: 'rgba(255,255,255,0.6)',
-      textDecoration: 'none',
-      fontWeight: '400'
-    });
-    devLink.onmouseover = () => devLink.style.color = 'rgba(255,255,255,0.9)';
-    devLink.onmouseout = () => devLink.style.color = 'rgba(255,255,255,0.6)';
-
-    overlay.appendChild(devLink);
-
+    overlay.appendChild(domainP);
+    overlay.appendChild(domainInput);
+    overlay.appendChild(domainButton);
     overlay.appendChild(errorDiv);
 
     document.body.appendChild(overlay);
     console.log('Overlay appended to body');
 
-    button.addEventListener('click', () => {
+    // Functions
+    function checkDomain() {
+      const val = domainInput.value.trim().toLowerCase();
+      // Start annoying countdown before showing result
+      overlay.removeChild(domainP);
+      overlay.removeChild(domainInput);
+      overlay.removeChild(domainButton);
+      overlay.removeChild(errorDiv);
+
+      const countdownDiv = document.createElement('div');
+      countdownDiv.style.cssText = `
+        text-align: center;
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 20px;
+      `;
+      countdownDiv.innerHTML = `
+        <div style="font-size: 3em; margin-bottom: 20px;">⏳</div>
+        <div>Verifying your intent...</div>
+        <div id="domainCountdown" style="font-size: 4em; margin-top: 20px;">3</div>
+      `;
+      overlay.appendChild(countdownDiv);
+
+      let domainCount = 3;
+      const domainCountdownEl = document.getElementById('domainCountdown');
+      const domainInterval = setInterval(() => {
+        domainCount--;
+        domainCountdownEl.textContent = domainCount;
+        if (domainCount <= 0) {
+          clearInterval(domainInterval);
+          overlay.removeChild(countdownDiv);
+          if (val === window.location.hostname.toLowerCase()) {
+            // Correct, proceed to challenge
+            overlay.appendChild(p);
+            overlay.appendChild(input);
+            overlay.appendChild(buttonContainer);
+            const devLink = document.createElement('a');
+            devLink.href = 'https://x.com/technerdxp';
+            devLink.textContent = '@TechNerdXp';
+            devLink.target = '_blank';
+            Object.assign(devLink.style, {
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              fontSize: '0.8em',
+              color: 'rgba(255,255,255,0.6)',
+              textDecoration: 'none',
+              fontWeight: '400'
+            });
+            devLink.onmouseover = () => devLink.style.color = 'rgba(255,255,255,0.9)';
+            devLink.onmouseout = () => devLink.style.color = 'rgba(255,255,255,0.6)';
+            overlay.appendChild(devLink);
+            overlay.appendChild(errorDiv);
+            // Add challenge listeners
+            button.addEventListener('click', checkChallenge);
+            input.addEventListener('keypress', (e) => {
+              if (e.key === 'Enter') checkChallenge();
+            });
+          } else {
+            // Wrong, show error and reset
+            overlay.appendChild(domainP);
+            overlay.appendChild(domainInput);
+            overlay.appendChild(domainButton);
+            overlay.appendChild(errorDiv);
+            errorDiv.textContent = 'Incorrect domain! Try again.';
+            domainInput.value = '';
+            setTimeout(() => {
+              errorDiv.textContent = '';
+            }, 2000);
+          }
+        }
+      }, 1000);
+    }
+
+    function checkChallenge() {
       const val = input.value.trim();
-      let correct = false;
-      if (challengeObj) {
-        if (difficulty === 1 && val.toLowerCase() === challengeObj.answer.toLowerCase()) correct = true;
-        else if (difficulty === 2 && val === challengeObj.answer) correct = true;
-        else if (difficulty === 3 && val === challengeObj.answer) correct = true;
-      }
-      if (correct) {
-        overlay.remove();
-      } else {
-        errorDiv.textContent = 'Incorrect! Try again.';
-      }
+      // Start annoying countdown before showing result
+      overlay.removeChild(p);
+      overlay.removeChild(input);
+      overlay.removeChild(buttonContainer);
+      overlay.removeChild(errorDiv);
+
+      const countdownDiv = document.createElement('div');
+      countdownDiv.style.cssText = `
+        text-align: center;
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 20px;
+      `;
+      countdownDiv.innerHTML = `
+        <div style="font-size: 3em; margin-bottom: 20px;">⏳</div>
+        <div>Evaluating your resistance...</div>
+        <div id="challengeCountdown" style="font-size: 4em; margin-top: 20px;">3</div>
+      `;
+      overlay.appendChild(countdownDiv);
+
+      let challengeCount = 3;
+      const challengeCountdownEl = document.getElementById('challengeCountdown');
+      const challengeInterval = setInterval(() => {
+        challengeCount--;
+        challengeCountdownEl.textContent = challengeCount;
+        if (challengeCount <= 0) {
+          clearInterval(challengeInterval);
+          overlay.removeChild(countdownDiv);
+          let correct = false;
+          if (challengeObj) {
+            if (difficulty === 1 && val.toLowerCase() === challengeObj.answer.toLowerCase()) correct = true;
+            else if (difficulty === 2 && val === challengeObj.answer) correct = true;
+            else if (difficulty === 3 && val === challengeObj.answer) correct = true;
+          }
+          if (correct) {
+            // Success - start processing countdown
+            const processingDiv = document.createElement('div');
+            processingDiv.style.cssText = `
+              text-align: center;
+              font-size: 2em;
+              font-weight: bold;
+              margin-bottom: 20px;
+            `;
+            processingDiv.innerHTML = `
+              <div style="font-size: 3em; margin-bottom: 20px;">⏳</div>
+              <div>Processing your resistance...</div>
+              <div id="processingCountdown" style="font-size: 4em; margin-top: 20px;">${difficulty === 1 ? 30 : difficulty === 2 ? 60 : 180}</div>
+            `;
+            overlay.appendChild(processingDiv);
+
+            let processCount = difficulty === 1 ? 30 : difficulty === 2 ? 60 : 180;
+            const processCountdownEl = document.getElementById('processingCountdown');
+            const processInterval = setInterval(() => {
+              processCount--;
+              processCountdownEl.textContent = processCount;
+              if (processCount <= 0) {
+                clearInterval(processInterval);
+                // Show final confirmation
+                overlay.removeChild(processingDiv);
+                showFinalConfirmation();
+              }
+            }, 1000);
+          } else {
+            // Wrong, show error and reset
+            overlay.appendChild(p);
+            overlay.appendChild(input);
+            overlay.appendChild(buttonContainer);
+            overlay.appendChild(errorDiv);
+            errorDiv.textContent = 'Incorrect! Try again.';
+            input.value = '';
+            setTimeout(() => {
+              errorDiv.textContent = '';
+            }, 2000);
+          }
+        }
+      }, 1000);
+    }
+
+    function showFinalConfirmation() {
+      const confirmDiv = document.createElement('div');
+      confirmDiv.style.cssText = `
+        text-align: center;
+        max-width: 500px;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      `;
+
+      confirmDiv.innerHTML = `
+        <h2 style="margin-bottom: 30px; font-size: 2em;">Final Confirmation</h2>
+        <p style="margin-bottom: 30px; font-size: 1.2em;">Do you really want to access this distracting website?</p>
+        <button id="proceedBtn" style="
+          padding: 15px 30px;
+          font-size: 1.2em;
+          background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+          color: white;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          margin-right: 10px;
+        ">Yes, Proceed</button>
+        <button id="refocusBtn" style="
+          padding: 15px 30px;
+          font-size: 1.2em;
+          background: #ff4757;
+          color: white;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+        ">Refocus Your Energy</button>
+      `;
+
+      overlay.appendChild(confirmDiv);
+
+      const proceedBtn = document.getElementById('proceedBtn');
+      const refocusBtn = document.getElementById('refocusBtn');
+
+      proceedBtn.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+      });
+      refocusBtn.addEventListener('click', () => {
+        window.location.href = redirectUrl;
+      });
+    }
+
+    domainButton.addEventListener('click', checkDomain);
+    domainInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') checkDomain();
     });
   });
 })();
