@@ -102,6 +102,12 @@ dangerous left in any branch, git is ordinary again: `origin` is configured, `ma
 Both files remain on disk and are gitignored, alongside `docs/vocab.md`. The rule that matters
 going forward is simply: **the repo is public, so nothing private goes in a tracked file.**
 
+Revisited the same day and confirmed. Publishing the source was never a requirement of hosting
+the site — the site is served from `gh-pages` and is completely independent of what `main`
+holds — so reverting `main` to v1 was on the table and declined. The source stays public: it
+is the only off-machine backup of v2, and an auditable source tree is worth something for an
+extension whose whole pitch is that it asks for no permissions and collects nothing.
+
 ## 2026-08-17 — The landing site is light-only; the extension keeps three themes
 `site/style.css` followed `prefers-color-scheme`, so a visitor on a dark desktop got a light
 OG preview card and then landed on a dark page. Every other public-facing asset is already
