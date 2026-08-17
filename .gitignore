@@ -1,0 +1,16 @@
+# OS/editor
+Thumbs.db
+.DS_Store
+*.log
+.env
+docs/vocab.md
+_cold-storage/
+
+# Private working material. Stays on disk where the workflow expects it, never in git —
+# main is published to a public repo and these are candid internal notes.
+docs/original-brief.md
+scratchpad.md
+
+# Build output — regenerate with `npm run build`
+dist/
+node_modules/

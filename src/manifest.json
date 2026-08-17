@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Block Distracting Websites – Resistor",
+  "version": "2.0.0",
+  "description": "Block distracting sites behind a mindful pause. Focus timers, schedules, daily limits and streaks. No account, no tracking.",
+  "minimum_chrome_version": "96",
+
+  "_comment_key": "DEV ONLY. Public key of the published item, so an unpacked build loads under the real Web Store ID (dieinhikppmdlibedenkhjicjajfldcm). The Web Store REJECTS an uploaded manifest containing 'key', so scripts/build.mjs strips this and every _comment_* field when packaging. Never zip src/ by hand.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo46hKE0bHU2FsezbI9Pi876EabY0pyuSZWUnlVB6taLjac4oZi084QqMh5zfpSm3QMpOkG1qH4FqFE5CB1gZgne2IWDeKgsoEros9/6hi9WF7JNiHZQv+5FPuiRwD7s910L8wmeEcn0zJue0MmIWUVlehZNVo3hmf1+CdEXv3SC12VPTe9pyCWePQYFxU9zjXrme3F3jUNlludUuXeXIyAzt7XeI1ewtl9MMcqUf3MVePnXZNKLdH7QZHF1VgFMUpcUxHOfhw9qiVyBFSqA7JHUqlPYFAl5KCuYo5XARJ6UAjpZF7dSLHqDvT+kcNjNVT3O1MaXk8kAdqc6hxieY1QIDAQAB",
+
+  "permissions": [
+    "storage",
+    "declarativeNetRequestWithHostAccess",
+    "alarms",
+    "activeTab"
+  ],
+  "optional_host_permissions": ["*://*/*"],
+
+  "background": {
+    "service_worker": "sw.js",
+    "type": "module"
+  },
+
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Resistor",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "options_page": "options/options.html",
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked/blocked.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+# noisy or heavy — rarely worth reading into context
+node_modules/
+.venv/
+dist/
+build/
+__pycache__/
+*.log
+*.lock
+
+# client materials — binaries/scans, not something to reason token-by-token
+dock-in/
+
+# anything deliberately retired out of context — heavy files, superseded
+# dock-in/ material, whatever else shouldn't be tracked or read
+_cold-storage/
+
+# secrets — never belong in context either
+.env
+.env.*
