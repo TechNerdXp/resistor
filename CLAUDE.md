@@ -19,10 +19,13 @@ plain ES modules, and Node is used only for tests and packaging.
   by hand. If the UI changes, re-run it so the listing never shows a screenshot of something
   that no longer exists.
 - **`site/` is the source of truth for the hosted site; publish with `npm run publish:site`.**
-  It mirrors `site/` onto the `gh-pages` branch of `TechNerdXp/resistor` (that repo's `main`
-  is still v1's source — leave it alone). The Web Store re-checks the homepage, privacy and
-  support URLs on every submission and rejects unreachable ones, so never change `site/`
-  without republishing. This project's own repo stays off GitHub.
+  It mirrors `site/` onto the `gh-pages` branch of `TechNerdXp/resistor`. The Web Store
+  re-checks the homepage, privacy and support URLs on every submission and rejects
+  unreachable ones, so never change `site/` without republishing.
+- Git is ordinary: `origin` is `TechNerdXp/resistor`, `main` tracks `origin/main`, `git push`
+  works. The repo is **public**, so nothing private belongs in a tracked file —
+  `docs/original-brief.md`, `scratchpad.md` and `docs/vocab.md` are gitignored on purpose and
+  live on disk only. Put working notes in those, not in tracked files.
 - **`src/ui/app.css` is generated — never edit it.** Source is `styles/app.css` (Tailwind v4);
   rebuild with `npm run css`. `npm run build` rebuilds it automatically before packaging.
 - Do **not** use Tailwind's `dark:` variant. Resistor has three theme states (system / light /

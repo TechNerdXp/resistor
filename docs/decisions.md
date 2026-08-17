@@ -82,6 +82,26 @@ wrong theme every time. chrome.storage is async and useless for that, so the cho
 into `localStorage` as a paint-time cache and reconciled immediately after. Verified across all
 six combinations of OS preference × setting.
 
+## 2026-08-17 — v2 published to `main`; private notes purged from history instead of dodged
+`TechNerdXp/resistor` is now 2.0 — the **existing** public repo, not a new one. v2 went on as a
+single squashed commit whose parent is v1's tip, so v1's four commits survive underneath it.
+
+The reason for squashing was that `docs/original-brief.md` and `scratchpad.md` sat in the two
+earliest local commits, so pushing the full history would have published candid working notes.
+The first attempt at protecting them was to configure **no** `origin` at all and publish via
+`git commit-tree` plumbing. That was the wrong trade: it made every future release depend on
+remembering an obscure incantation, and a single absent-minded `git remote add` + `git push`
+would have leaked the notes anyway. Avoiding a loaded gun is not the same as unloading it.
+
+So the risk was removed at the source. `git filter-branch --index-filter` purged both files
+from every commit of the pre-publication history, which is kept as the local branch
+`archive/pre-publish`; `git log --all -- <those files>` now returns nothing. With nothing
+dangerous left in any branch, git is ordinary again: `origin` is configured, `main` tracks
+`origin/main`, and `git push` is safe.
+
+Both files remain on disk and are gitignored, alongside `docs/vocab.md`. The rule that matters
+going forward is simply: **the repo is public, so nothing private goes in a tracked file.**
+
 ## 2026-08-17 — The landing site is light-only; the extension keeps three themes
 `site/style.css` followed `prefers-color-scheme`, so a visitor on a dark desktop got a light
 OG preview card and then landed on a dark page. Every other public-facing asset is already
@@ -97,19 +117,14 @@ noise on a page they visit once before installing.
 ## 2026-08-17 — The site is hosted on an orphan `gh-pages` branch, not from this repo
 The Web Store rejected the submission with *homepage / privacy policy / support URL is not
 reachable*: the URLs had been written into the listing and into `sw.js` before anything was
-actually hosted. `TechNerdXp/resistor` already existed and is public, but its `main` holds the
-**v1** extension source, and this project's repo is deliberately not on GitHub — the brief and
-scratchpad are candid working material. So the site went to an orphan `gh-pages` branch with
-its own history: v1's `main` is untouched, no v2 source is published, and the URLs resolve.
-Pushing a branch named `gh-pages` auto-enables Pages, so no API call or workflow was needed.
+actually hosted. `TechNerdXp/resistor` already existed and is public. The site went to a
+`gh-pages` branch with its own orphan history, so it is independent of whatever `main` holds
+and republishing can never touch the source. Pushing a branch named `gh-pages` auto-enables
+Pages, so no API call or workflow was needed.
 
 `site/` stays the single source of truth; `npm run publish:site` mirrors it onto the branch
 (deleting anything no longer in `site/`) and is a no-op when they already match. All four
 pages plus every relative asset verified 200.
-
-Still stale, left alone deliberately: the GitHub repo's description and `main` branch still
-describe v1 "Challenge Blocker Extension". Fixing that means publishing v2 source, which is a
-separate decision.
 
 ## 2026-08-17 — Rule syncs are serialised through a queue
 One user action fans out into several reconciliation triggers within milliseconds: granting
