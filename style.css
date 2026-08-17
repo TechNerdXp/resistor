@@ -1,8 +1,13 @@
 /* Landing site styles. Single stylesheet, no framework, no webfont request —
    the page should render in one round trip. */
 
+/* Light only, deliberately. Every other public-facing asset is light — the OG card, the
+   store screenshots, the promo tiles (see scripts/screenshots.mjs) — so following the OS
+   into dark meant a visitor on a dark desktop got a light preview card and then landed on a
+   dark page. The extension UI still honours system/light/dark; that choice belongs to
+   software someone uses all day, not to a one-visit landing page. */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --bg: #ffffff;
   --bg-alt: #f5f7fa;
   --surface: #ffffff;
@@ -16,21 +21,6 @@
   --radius: 14px;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --wrap: 960px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0e1116;
-    --bg-alt: #141920;
-    --surface: #161c24;
-    --border: #28303a;
-    --text: #e9edf3;
-    --text-dim: #9aa5b4;
-    --accent: #6aa0ff;
-    --accent-text: #0b1220;
-    --accent-soft: #18243a;
-    --ok: #6ee7a8;
-  }
 }
 
 * { box-sizing: border-box; }
